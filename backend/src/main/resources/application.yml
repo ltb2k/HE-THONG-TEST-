@@ -1,0 +1,62 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: mushroom-farm-backend
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:mushroom_farm}
+    username: ${DB_USER:mushroom}
+    password: ${DB_PASSWORD:mushroom_secret}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      connection-timeout: 20000
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+# Cấu hình bảo mật & JWT (BR-SEC-002)
+jwt:
+  # Secret key (tối thiểu 256 bits = 32 bytes)
+  secret: c3VwZXItc2VjcmV0LWtleS1tdXNocm9vbS1mYXJtLTIwMjYtcHJvamVjdC0yNTZiaXRz
+  access-token-expiration-ms: 1800000   # 30 phút (SRS BR-SEC-002)
+  refresh-token-expiration-ms: 604800000 # 7 ngày (SRS BR-SEC-002)
+  verification-token-expiration-ms: 900000 # 15 phút (SRS BR-SEC-001)
+
+# Cấu hình MQTT Broker (BR-IOT-001)
+mqtt:
+  broker-url: tcp://${MQTT_HOST:localhost}:${MQTT_PORT:1883}
+  client-id: mushroom-backend-server
+  default-qos: 1
+  telemetry-topic: mushroom/farm/+/telemetry
+  command-topic-prefix: mushroom/farm/device/
+  command-ack-topic: mushroom/farm/device/+/ack
