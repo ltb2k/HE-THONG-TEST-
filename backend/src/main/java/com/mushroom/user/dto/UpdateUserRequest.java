@@ -1,0 +1,29 @@
+package com.mushroom.user.dto;
+
+import com.mushroom.user.entity.Role;
+import com.mushroom.user.entity.UserStatus;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UpdateUserRequest {
+
+    @Size(max = 100, message = "Họ và tên không vượt quá 100 ký tự")
+    private String fullName;
+
+    @Pattern(regexp = "^$|[0-9]{10,11}", message = "Số điện thoại không đúng định dạng")
+    private String phone;
+
+    private Role role;
+
+    private UserStatus status;
+}
